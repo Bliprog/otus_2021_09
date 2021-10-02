@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow'
+}
+
+
+dependencies {
+    implementation 'com.google.guava:guava:31.0.1-jre'
+
+}
+
+shadowJar{
+    archiveBaseName.set("gradleHelloOtus")
+    archiveVersion.set("1.0")
+    archiveClassifier.set("")
+    manifest {
+        attributes 'Main-Class': 'ru.bliprog.HelloOtus'
+    }
+}
+
+tasks.build.dependsOn tasks.shadowJar
