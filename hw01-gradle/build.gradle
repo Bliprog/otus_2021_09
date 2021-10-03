@@ -2,11 +2,11 @@ plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow'
 }
-
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 dependencies {
-    implementation 'com.google.guava:guava:31.0.1-jre'
-
+    implementation group: 'com.google.guava', name: 'guava', version: '31.0.1-jre'
 }
 
 shadowJar {
