@@ -1,14 +1,20 @@
 plugins {
-    id 'java'
+    id 'idea'
+    id 'com.github.johnrengelman.shadow' version "7.0.0" apply false
+    id "io.spring.dependency-management" version "1.0.10.RELEASE"
+}
+allprojects {
+    group 'ru.bliprog'
+
+    repositories {
+        mavenCentral()
+    }
+
+    apply plugin: "io.spring.dependency-management"
+    dependencyManagement {
+        dependencies {
+            dependency("com.google.guava:guava:${Versions.guava}")
+        }
+    }
 }
 
-group 'org.example'
-version '1.0-SNAPSHOT'
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-}
