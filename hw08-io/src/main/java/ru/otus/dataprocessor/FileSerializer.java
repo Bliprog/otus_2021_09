@@ -20,7 +20,7 @@ public class FileSerializer implements Serializer {
             String json = new ObjectMapper().writeValueAsString(data);
             Files.write(Path.of(fileName), json.getBytes());
         } catch (IOException e) {
-            System.out.println("Ошибка при сериализации объекта");
+            throw new FileProcessException(e);
         }
         //формирует результирующий json и сохраняет его в файл
     }
