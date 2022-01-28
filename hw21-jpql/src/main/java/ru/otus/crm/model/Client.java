@@ -1,13 +1,9 @@
 package ru.otus.crm.model;
 
 
-import org.hibernate.Hibernate;
-
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "client")
@@ -104,8 +100,6 @@ public class Client implements Cloneable {
         return "Client{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-   //        ", Address='"+address+'\''+
-     //           ", Phones='"+phones+'\''+
                 '}';
     }
 }
