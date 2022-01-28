@@ -1,3 +1,5 @@
 rootProject.name = 'otus_2021_09'
 include 'hw01-gradle'
 include 'hw02-generics'
+include 'hw21-jpql'
+
