@@ -21,9 +21,9 @@ public class TestRunnerImpl implements TestRunner {
         var beforeMethods = annotationProcessor.getMethods(testClass, Before.class);
         var testMethods = annotationProcessor.getMethods(testClass, Test.class);
         var afterMethods = annotationProcessor.getMethods(testClass, After.class);
-        var testInstance = testClass.getDeclaredConstructor().newInstance();
         for (var testMethod :
                 testMethods) {
+            var testInstance = testClass.getDeclaredConstructor().newInstance();
             //Не получилось запустить invoke в стриме, т.к. checked Exceptions
             for (var beforeMethod : beforeMethods) beforeMethod.invoke(testInstance);
             try {
@@ -34,8 +34,11 @@ public class TestRunnerImpl implements TestRunner {
                 testStatistic.addFailedTestsWithException(testMethod, (Exception) e.getTargetException());
                 continue;
             }
+            finally {
+                for (var afterMethod : afterMethods) afterMethod.invoke(testInstance);
+            }
             testStatistic.addPassedTest(testMethod);
-            for (var afterMethod : afterMethods) afterMethod.invoke(testInstance);
+
         }
     }
 
