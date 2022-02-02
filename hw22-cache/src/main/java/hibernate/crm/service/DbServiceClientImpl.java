@@ -29,7 +29,7 @@ public class DbServiceClientImpl implements DBServiceClient {
 
     @Override
     public Client saveClient(Client client) {
-        return transactionManager.doInTransaction(session -> {
+        var clientClone = transactionManager.doInTransaction(session -> {
             var clientCloned = client.clone();
             if (client.getId() == null) {
                 clientDataTemplate.insert(session, clientCloned);
@@ -40,6 +40,8 @@ public class DbServiceClientImpl implements DBServiceClient {
             log.info("updated client: {}", clientCloned);
             return clientCloned;
         });
+        cache.put(clientClone.getId(),Optional.of(clientClone));
+        return clientClone;
     }
 
     @Override
