@@ -9,7 +9,7 @@ public class HWCacheDemo {
 
     public static void main(String[] args) {
         HwCache<String, Integer> cache = new MyCache<>();
-        var instance= new HWCacheDemo();
+        var instance = new HWCacheDemo();
         instance.demo(cache);
         instance.demo2(cache);
     }
@@ -26,12 +26,11 @@ public class HWCacheDemo {
 
         cache.addListener(listener);
         cache.put(new String("1"), 1);
-        listener=null;
         logger.info("getValue:{}", cache.get("1"));
-        System.gc();
     }
 
-    private void demo2(HwCache<String, Integer> cache){
+    private void demo2(HwCache<String, Integer> cache) {
+        System.gc();
         cache.put(new String("2"), 21);
         logger.info("demo 2 getValue:{}", cache.get("2"));
     }

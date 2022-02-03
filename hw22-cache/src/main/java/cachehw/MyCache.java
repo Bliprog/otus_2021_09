@@ -1,48 +1,35 @@
 package cachehw;
 
 
+import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.WeakHashMap;
+import java.util.stream.Collectors;
 
 public class MyCache<K, V> implements HwCache<K, V> {
     //Надо реализовать эти методы
-    WeakHashMap<K,V> cacheStore = new WeakHashMap<>();
-    List<WeakReference<HwListener<K,V>>> weakReferenceListeners = new ArrayList<>();
+    private final WeakHashMap<K, V> cacheStore = new WeakHashMap<>();
+    private final List<WeakReference<HwListener<K, V>>> weakReferenceListeners = new ArrayList<>();
 
     @Override
     public void put(K key, V value) {
-        cacheStore.put(key,value);
-        weakReferenceListeners.forEach(wrl->{
-            var notWeakListener=wrl.get();
-            if(notWeakListener!=null) {
-               notWeakListener.notify(key, value, "put");
-            }
-        });
+        cacheStore.put(key, value);
+       notifyListeners(key,value,"put");
     }
 
     @Override
     public void remove(K key) {
-         var removedValue = cacheStore.get(key) ;
+        var removedValue = cacheStore.get(key);
         cacheStore.remove(key);
-        weakReferenceListeners.forEach(wrl->{
-            var notWeakListener=wrl.get();
-            if(notWeakListener!=null) {
-                notWeakListener.notify(key, removedValue, "remove");
-            }
-        });
+        notifyListeners(key,removedValue,"remove");
     }
 
     @Override
     public V get(K key) {
         var getValue = cacheStore.get(key);
-        weakReferenceListeners.forEach(wrl->{
-            var notWeakListener=wrl.get();
-            if(notWeakListener!=null) {
-                notWeakListener.notify(key,getValue , "get");
-            }
-        });
+        notifyListeners(key,getValue,"get");
         return getValue;
 
     }
@@ -55,6 +42,20 @@ public class MyCache<K, V> implements HwCache<K, V> {
 
     @Override
     public void removeListener(HwListener<K, V> listener) {
-        weakReferenceListeners.remove(new WeakReference<>(listener));
+        weakReferenceListeners.stream()
+                .filter(wrl->wrl.get()==listener)
+                .forEach(weakReferenceListeners::remove);
+    }
+
+    private void notifyListeners(K key, V value, String action){
+        weakReferenceListeners.removeAll(weakReferenceListeners.stream()
+                .filter(wrl->wrl.get()==null).
+                collect(Collectors.toList()));
+        weakReferenceListeners.forEach(wrl -> {
+            var notWeakListener = wrl.get();
+            if (notWeakListener != null) {
+                notWeakListener.notify(key, value, action);
+            }
+        });
     }
 }

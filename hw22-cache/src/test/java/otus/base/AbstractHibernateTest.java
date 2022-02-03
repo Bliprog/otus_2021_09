@@ -61,16 +61,13 @@ public abstract class AbstractHibernateTest {
 
         transactionManager = new TransactionManagerHibernate(sessionFactory);
         clientTemplate = new DataTemplateHibernate<>(Client.class);
-        var cache = new MyCache<Long, Optional<Client>>();
-        HwListener<Long, Optional<Client>> listener = new HwListener<Long, Optional<Client>>() {
+        var cache = new MyCache<Long, Client>();
+        HwListener<Long, Client> listener = new HwListener<Long, Client>() {
             @Override
-            public void notify(Long key, Optional<Client> value, String action) {
-                if(value!=null&&value.isPresent()) {
-                    System.out.println(String.format("key:%s, value:%s, action: %s", key, value.get(), action));
-                }
-                else {
+            public void notify(Long key, Client value, String action) {
+
                     System.out.println(String.format("key:$s, value:$s, action: $s", key, value, action));
-                }
+
             }
         };
         dbServiceClient = new DbServiceClientImpl(transactionManager, clientTemplate,cache);

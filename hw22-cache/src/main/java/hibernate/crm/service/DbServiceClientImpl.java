@@ -18,10 +18,10 @@ public class DbServiceClientImpl implements DBServiceClient {
 
     private final DataTemplate<Client> clientDataTemplate;
     private final TransactionManager transactionManager;
-    private final HwCache<Long,Optional<Client>> cache;
+    private final HwCache<Long,Client> cache;
 
 
-    public DbServiceClientImpl(TransactionManager transactionManager, DataTemplate<Client> clientDataTemplate, HwCache<Long,Optional<Client>> cache) {
+    public DbServiceClientImpl(TransactionManager transactionManager, DataTemplate<Client> clientDataTemplate, HwCache<Long,Client> cache) {
         this.transactionManager = transactionManager;
         this.clientDataTemplate = clientDataTemplate;
         this.cache = cache;
@@ -40,7 +40,7 @@ public class DbServiceClientImpl implements DBServiceClient {
             log.info("updated client: {}", clientCloned);
             return clientCloned;
         });
-        cache.put(clientClone.getId(),Optional.of(clientClone));
+        cache.put(clientClone.getId(),clientClone);
         return clientClone;
     }
 
@@ -51,16 +51,15 @@ public class DbServiceClientImpl implements DBServiceClient {
             returned = transactionManager.doInReadOnlyTransaction(session -> {
                 var query = session.createQuery("select c from Client c join fetch c.phones join fetch c.address where c.id=" + id, Client.class);
                 Client client = query.getSingleResult();
-                Optional<Client> result = Optional.of(client);
-                cache.put(id, result);
+                cache.put(id, client);
                 log.info("client: {}", client);
-                return result;
+                return client;
             });
         }
         else {
             log.info("client returned from cache");
         }
-        return returned;
+        return Optional.of(returned);
     }
 
     @Override

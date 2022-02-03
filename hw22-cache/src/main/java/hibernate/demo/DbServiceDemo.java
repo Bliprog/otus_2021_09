@@ -39,16 +39,11 @@ public class DbServiceDemo {
 ///
         var clientTemplate = new DataTemplateHibernate<>(Client.class);
 ///
-        var cache = new MyCache<Long, Optional<Client>>();
-        HwListener<Long, Optional<Client>> listener = new HwListener<Long, Optional<Client>>() {
+        var cache = new MyCache<Long,Client>();
+        HwListener<Long, Client> listener = new HwListener<Long, Client>() {
             @Override
-            public void notify(Long key, Optional<Client> value, String action) {
-                if(value!=null&&value.isPresent()) {
-                    log.info("key:{}, value:{}, action: {}", key, value.get(), action);
-                }
-                else {
+            public void notify(Long key, Client value, String action) {
                     log.info("key:{}, value:{}, action: {}", key, value, action);
-                }
             }
         };
         cache.addListener(listener);
