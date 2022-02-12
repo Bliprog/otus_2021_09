@@ -1,0 +1,196 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+        }
+
+        .modal .modal_content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            z-index: 99999;
+        }
+
+        .modal .modal_content .close_modal_window {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+    <title>Клиенты</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+</head>
+
+<body>
+<h4>Получить json клиентов</h4>
+<button onclick="getAllClients()">Получить</button>
+<pre id = "clientsDataContainer"></pre>
+<h4>Все клиенты</h4>
+<table id="clientsTable" style="width: 400px">
+    <thead>
+        <tr>
+            <td style="width: 50px">Id</td>
+            <td style="width: 150px">Имя</td>
+            <td style="width: 100px">Адрес</td>
+            <td style="width: 100px">Телефоны</td>
+        </tr>
+    </thead>
+    <tbody>
+    <#list clientsList as client>
+        <tr>
+            <td>${client.id}</td>
+            <td>${client.name}</td>
+            <#if client.address??>
+            <td>${client.address.toString()}</td>
+            </#if>
+            <#if client.phones??>
+            <td>
+            <#list client.phones as phone >
+                ${phone.toString()}
+            </#list>
+            </td>
+            </#if>
+        </tr>
+    </#list>
+    </tbody>
+</table>
+<button onclick="addClient()">Создать клиента</button>
+
+<div id="my_modal" class="modal">
+    <div class="modal_content form-group">
+        <span class="close_modal_window">×</span>
+        <label>Имя: </label>
+        <input type="text" id="clientName" name="name" class="form-control" placeholder="Заполните имя">
+        <span id="errorClientName" style="color: red"></span>
+        <br>
+        <label>Адрес: </label>
+        <input type="text" id="clientAddress" name="address" class="form-control" placeholder="ул.Пушкина, д.Колотушкина">
+        <span id="errorAddress" style="color: red"></span>
+        <br>
+        <label>Телефон</label>
+        <div id="phonesDiv">
+            <input type="text" class="clientPhones" name="phone" class="form-control" placeholder="8-111-111-11-11">
+            <br>
+        </div>
+        <span id="errorPhone" style="color: red"></span>
+        <button class="btn btn-primary" onclick="addPhoneInput()">Добавить телефон</button>
+        <button class="createClient btn btn-primary">Добавить клиента</button>
+    </div>
+</div>
+<script>
+    function addPhoneInput(){
+        var phonesDiv = document.getElementById("phonesDiv");
+        phonesDiv.innerHTML+= '<input type="text" class="clientPhones" name="phone" class="form-control" placeholder="8-111-111-11-11"> <br>'
+    }
+    function getAllClients() {
+        const clientsDataContainer = document.getElementById('clientsDataContainer');
+        //fetch('api/user?id=' + id)
+        fetch('api/clients/')
+            .then(response => response.json())
+            .then(clients => clientsDataContainer.innerHTML = JSON.stringify(clients,null,4));
+    }
+    function addClient() {
+        var inputs = document.getElementsByClassName('selected');
+        var values = [];
+        for (var i = 0; inputs[i]; ++i) {
+            if (inputs[i].checked) {
+                values.push(inputs[i].value)
+            }
+        }
+        console.log(values);
+        var modal = document.getElementById("my_modal");
+        var span = document.getElementsByClassName("close_modal_window")[0];
+        var btnToSend = document.getElementsByClassName("createClient")[0];
+        modal.style.display = "block"
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+        btnToSend.onclick = function () {
+            var name = document.getElementById("clientName").value;
+            var address = document.getElementById("clientAddress").value;
+            var phones  = document.getElementsByClassName("clientPhones");
+
+            var phoneNumbers=[];
+            for (var i = 0; phones[i]; ++i) {
+                if (phones[i].value!="") {
+                    phoneNumbers.push(phones[i].value)
+                }
+            }
+
+            if(name==""){
+                document.getElementById("errorClientName").innerText="Поле должно быть заполнено"
+                return
+            }
+            else {
+                document.getElementById("errorClientName").innerText=""
+            }
+            if(address==""){
+                document.getElementById("errorAddress").innerText="Поле должно быть заполнено"
+                return
+            }
+            else {
+                document.getElementById("errorAddress").innerText=""
+            }
+            if(phoneNumbers.length==0){
+                document.getElementById("errorPhone").innerText="Должен быть добавлен хотя бы 1 телефон"
+                return
+            }
+            else {
+                document.getElementById("errorPhone").innerText=""
+            }
+
+
+            var client = {
+                name:name,
+                address: address,
+                phones: phoneNumbers
+            }
+            let status;
+            fetch('api/clients/',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf-8'
+                    },
+                    body: JSON.stringify(client)
+                }
+            )
+            .then(response=>{
+                if(response.status==200){
+                    window.location.reload();
+                }
+            })
+        }
+    }
+</script>
+</body>
+</html>
