@@ -6,7 +6,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class LockHomeWork {
     private final Lock lock = new ReentrantLock();
-    private int threadId =1;
     private final Map<String, Integer> countMap=new HashMap<>();
     private final Map<String, String> actionMap=new HashMap<>();
 
