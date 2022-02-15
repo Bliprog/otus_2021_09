@@ -6,34 +6,35 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class LockHomeWork {
     private final Lock lock = new ReentrantLock();
-    private final Map<String, Integer> countMap=new HashMap<>();
-    private final Map<String, String> actionMap=new HashMap<>();
+    String nextThread = "Thread-0";
+    private final Map<String, Integer> countMap = new HashMap<>();
+    private final Map<String, String> actionMap = new HashMap<>();
 
-    private void action(){
-        while(!Thread.currentThread().isInterrupted()) {
-                var threadName=Thread.currentThread().getName();
+    private void action(String nextThr) {
+        while (!Thread.currentThread().isInterrupted()) {
+            var threadName = Thread.currentThread().getName();
+            while (threadName.equals(nextThread)) {
+                lock.lock();
                 var count = countMap.get(threadName);
                 var action = actionMap.get(threadName);
-                lock.lock();
-                System.out.println(threadName+":"+countMap.get(Thread.currentThread().getName()));
+                System.out.println(threadName + ":" + countMap.get(Thread.currentThread().getName()));
+                if (count >= 10) {
+                    action = "minus";
+                } else {
+                    if (count <= 1)
+                        action = "plus";
+                }
+                if (action.equals("plus")) {
+                    count += 1;
+                } else {
+                    count -= 1;
+                }
+                actionMap.put(threadName, action);
+                countMap.put(threadName, count);
+                nextThread = nextThr;
                 lock.unlock();
-                if(count>=10) {
-                    action="minus";
-                }
-                else {
-                    if(count<=1)
-                        action="plus";
-                }
-                if(action.equals("plus")){
-                    count+=1;
-                }
-                else {
-                    count-=1;
-                }
-                actionMap.put(threadName,action);
-                countMap.put(threadName,count);
-
-                 sleep();
+                sleep();
+            }
         }
     }
 
@@ -45,13 +46,13 @@ public class LockHomeWork {
         }
     }
 
-    public void work(){
-        countMap.put("Thread-0",1);
-        countMap.put("Thread-1",1);
-        actionMap.put("Thread-0","plus");
-        actionMap.put("Thread-1","plus");
-        new Thread(() -> this.action()).start();
-        new Thread(() -> this.action()).start();
+    public void work() {
+        countMap.put("Thread-0", 1);
+        countMap.put("Thread-1", 1);
+        actionMap.put("Thread-0", "plus");
+        actionMap.put("Thread-1", "plus");
+        new Thread(() -> this.action("Thread-1")).start();
+        new Thread(() -> this.action("Thread-0")).start();
 
     }
 }
