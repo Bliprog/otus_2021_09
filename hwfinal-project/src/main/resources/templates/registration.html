@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Регистрация</title>
+    <script>
+        async function f(){
+            console.log("lox");
+            setTimeout(console.log("lox"),5000);
+            var formElement = document.getElementById("userForm");
+            formData = new FormData(formElement);
+            let obj = {};
+            formData.forEach((value, key) => obj[key] = value);
+            let response = await fetch(
+                "http://localhost:8080/registration",
+                {
+                    method:"POST",
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf-8'
+                    },
+                    body: JSON.stringify(obj)
+                }
+            );
+            console.log(response)
+            if(response.status==200){
+                window.location.href = "login.html";
+            }
+            return false;
+        }
+    </script>
+</head>
+
+<body>
+<div>
+    <fieldset>
+    <form method="POST" name="userForm" id ="userForm" onsubmit="f(); return false">
+        <h2>Регистрация</h2>
+        <label>Имя пользователя</label>
+        <input type="text" name="username" id="username"><br/>
+        <span id="usernameError"></span>
+        <label>Адрес эл.почты</label>
+        <input type="text" name="email" id="email"><br/>
+        <span id="emailError"></span>
+        <label>Телефон</label>
+        <input type="text" name="phone" id="phone"><br/>
+        <span id="phoneError"></span>
+        <label>Пароль</label>
+        <input type="text" name="password" id="password"><br/>
+        <span id="passwordError"></span>
+        <label>Подтверждение пароля</label>
+        <input type="text" name="passwordConfirm" id="passwordConfirm"><br/>
+        <span id="passwordConfirmError"></span>
+        <input type="submit" value="Зарегистрироваться">
+    </form>
+    </fieldset>
+    <a href="/">Главная</a>
+</div>
+</body>
+</html>
+
