@@ -20,37 +20,38 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
 
-   private final UserRepository userRepository;
+    private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
-        if(user ==null){
+        if (user == null) {
             throw new UsernameNotFoundException("Имя пользователя не найдена");
         }
         return user;
     }
 
-    public User findUserById(Long id){
+    public User findUserById(Long id) {
         Optional<User> userFromDb = userRepository.findById(id);
         return userFromDb.orElse(null);
     }
 
-    public User findUserByName(String name){
+    public User findUserByName(String name) {
         return userRepository.findByUsername(name);
     }
 
-    public List<User> allUsers(){
+    public List<User> allUsers() {
         return userRepository.findAll();
     }
 
-    public boolean isUsernameAlreadyUsed(String username){
+    public boolean isUsernameAlreadyUsed(String username) {
         return userRepository.findByUsername(username) != null;
     }
-    public boolean saveNewUser(User user){
-        if(isUsernameAlreadyUsed(user.getUsername())){
+
+    public boolean saveNewUser(User user) {
+        if (isUsernameAlreadyUsed(user.getUsername())) {
             return false;
         }
         user.setRoles(Collections.singleton(roleRepository.findByName(RolesEnum.ROLE_USER.toString())));
@@ -58,16 +59,18 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
         return true;
     }
-    public void saveEditUserInfo(User user){
+
+    public void saveEditUserInfo(User user) {
         userRepository.save(user);
     }
-    public void ChangePassword(User user){
+
+    public void ChangePassword(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
-    public boolean deleteUser(Long id){
-        if(userRepository.findById(id).isPresent()){
+    public boolean deleteUser(Long id) {
+        if (userRepository.findById(id).isPresent()) {
             userRepository.deleteById(id);
             return true;
         }

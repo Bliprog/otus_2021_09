@@ -6,6 +6,6 @@ import ru.bliprog.SocialNetwork.entity.Role;
 
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role,Long> {
+public interface RoleRepository extends JpaRepository<Role, Long> {
     Role findByName(String name);
 }

@@ -26,7 +26,12 @@ import java.util.List;
 public class ChatController {
     private final ChatMessageService chatMessageService;
     @GetMapping("/chat")
-    public String getAllMessages(Model model){
+    public String getChat(){
+        return ViewEnum.CHAT_VIEW.toString();
+    }
+
+    @GetMapping("/chat/get_chat_messages")
+    public ResponseEntity<?> getAllMessages(Model model){
         List<HashMap<String, Object>> messages = new ArrayList<>();
         for(ChatMessage chatMessageEntity: chatMessageService.getAllMessagesWithContent()){
             HashMap hashMap=new HashMap<>();
@@ -36,7 +41,7 @@ public class ChatController {
         }
         model.addAttribute("messages", messages);
         model.addAttribute("username", SecurityAuthUserUtil.getCurrentUsername());
-        return ViewEnum.CHAT_VIEW.toString();
+        return ResponseEntity.ok(model);
     }
     @MessageMapping("/chat.sendMessage")
     @SendTo("/topic/public")
@@ -48,11 +53,10 @@ public class ChatController {
     @MessageMapping("/chat.addUser")
     @SendTo("/topic/public")
     public ChatMessagePayload addUser(@Payload ChatMessagePayload chatMessage,
-                                     SimpMessageHeaderAccessor headerAccessor) {
+                               SimpMessageHeaderAccessor headerAccessor) {
         // Add username in web socket session
         headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
         chatMessageService.saveNewMessage(chatMessageService.newChatMessageEntityFromChatMessagePayload(chatMessage));
         return chatMessage;
     }
 }
-

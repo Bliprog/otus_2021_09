@@ -7,13 +7,15 @@ import ru.bliprog.SocialNetwork.entity.User;
 
 public class SecurityAuthUserUtil {
     private static Authentication authentication;
-    public static String getCurrentUsername(){
-        authentication=SecurityContextHolder.getContext().getAuthentication();
+
+    public static String getCurrentUsername() {
+        authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();
     }
-    public static void changeCurrentAuthority(User user){
-        authentication=SecurityContextHolder.getContext().getAuthentication();
-      User userInAuth=(User) authentication.getPrincipal();
-      userInAuth.setUsername(user.getUsername());
+
+    public static void changeCurrentAuthority(User user) {
+        authentication = SecurityContextHolder.getContext().getAuthentication();
+        User userInAuth = (User) authentication.getPrincipal();
+        userInAuth.setUsername(user.getUsername());
     }
 }

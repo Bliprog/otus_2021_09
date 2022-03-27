@@ -9,7 +9,7 @@ import ru.bliprog.SocialNetwork.exceptions.AuthorisationException;
 public class DefaultExtensionHandler {
 
     @ExceptionHandler(AuthorisationException.class)
-    public ResponseEntity<?> handleException(AuthorisationException e){
+    public ResponseEntity<?> handleException(AuthorisationException e) {
         return ResponseEntity.badRequest().body(e);
     }
 }

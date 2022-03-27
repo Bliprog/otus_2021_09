@@ -14,15 +14,20 @@ public class ChatMessageService {
     private final UserService userService;
     private final ChatMessageRepository chatMessageRepository;
 
-    public List<ChatMessage> getAllMessages(){
+    public List<ChatMessage> getAllMessages() {
         return chatMessageRepository.findAll();
     }
-    public List<ChatMessage> getAllMessagesWithContent(){return  chatMessageRepository.findAllByContentIsNotNull();}
-    public void saveNewMessage(ChatMessage chatMessageEntity){
+
+    public List<ChatMessage> getAllMessagesWithContent() {
+        return chatMessageRepository.findAllByContentIsNotNull();
+    }
+
+    public void saveNewMessage(ChatMessage chatMessageEntity) {
         chatMessageRepository.save(chatMessageEntity);
     }
-    public ChatMessage newChatMessageEntityFromChatMessagePayload(ChatMessagePayload chatMessage){
-        ChatMessage chatMessageEntity=new ChatMessage();
+
+    public ChatMessage newChatMessageEntityFromChatMessagePayload(ChatMessagePayload chatMessage) {
+        ChatMessage chatMessageEntity = new ChatMessage();
         chatMessageEntity.setContent(chatMessage.getContent());
         chatMessageEntity.setSender(userService.findUserByName(chatMessage.getSender()));
         chatMessageEntity.setType(chatMessage.getType());

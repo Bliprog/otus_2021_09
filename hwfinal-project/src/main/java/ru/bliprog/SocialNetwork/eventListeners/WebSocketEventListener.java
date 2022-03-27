@@ -9,7 +9,6 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
-import ru.bliprog.SocialNetwork.entity.ChatMessage;
 import ru.bliprog.SocialNetwork.enums.MessageTypeEnum;
 import ru.bliprog.SocialNetwork.payloadEntity.ChatMessagePayload;
 import ru.bliprog.SocialNetwork.service.ChatMessageService;
@@ -22,15 +21,17 @@ public class WebSocketEventListener {
     private final SimpMessageSendingOperations simpMessageSendingOperations;
     private final UserService userService;
     private final ChatMessageService chatMessageService;
+
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
         log.info("Received a new web socket connection");
     }
+
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String username = (String) headerAccessor.getSessionAttributes().get("username");
-        if(username != null) {
+        if (username != null) {
             log.info("User Disconnected : " + username);
             ChatMessagePayload chatMessage = new ChatMessagePayload();
             chatMessage.setType(MessageTypeEnum.LEAVE);

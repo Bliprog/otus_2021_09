@@ -11,12 +11,12 @@ import javax.persistence.*;
 public class ChatMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private  Long id;
+    private Long id;
     private MessageTypeEnum type;
     private String content;
 
     @JsonBackReference
     @ManyToOne
-    @JoinColumn(name="user_id",nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User sender;
 }

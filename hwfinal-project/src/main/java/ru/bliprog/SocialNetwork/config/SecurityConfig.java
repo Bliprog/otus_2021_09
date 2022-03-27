@@ -28,7 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private String defaultSuccessUrl;
 
     @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception{
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .cors()
                 .configurationSource(corsConfigurationSource())
@@ -37,9 +37,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable()
                 .authorizeRequests()
                 .antMatchers("/registration").not().fullyAuthenticated()
-                .antMatchers("/admin/**").hasAnyRole("ADMIN","SUPERADMIN")
+                .antMatchers("/admin/**").hasAnyRole("ADMIN", "SUPERADMIN")
                 .antMatchers("/all_user/**").fullyAuthenticated()
-                .antMatchers("/","/resources/**").permitAll()
+                .antMatchers("/", "/resources/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -63,8 +63,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         source.registerCorsConfiguration("/**", configuration.applyPermitDefaultValues());
         return source;
     }
+
     @Autowired
-    protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception{
+    protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder);
     }
 }
