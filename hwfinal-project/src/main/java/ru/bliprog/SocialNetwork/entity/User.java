@@ -3,6 +3,7 @@ package ru.bliprog.SocialNetwork.entity;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import ru.bliprog.SocialNetwork.entity.listener.UserListener;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -10,6 +11,7 @@ import java.util.Set;
 
 @Data
 @Entity
+@EntityListeners(UserListener.class)
 @Table(name="social_users")
 public class User implements UserDetails {
     @Id
@@ -34,9 +36,6 @@ public class User implements UserDetails {
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
-
-    @OneToMany(mappedBy = "sender")
-    Set<ChatMessage> chatMessages;
 
     @Override
     public String getUsername() {

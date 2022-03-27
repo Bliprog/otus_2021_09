@@ -34,10 +34,6 @@ public class AdminController {
         if (isUserAdmin && !isSuperAdmin) {
             throw new AuthorisationException("accessError", "У вас недостаточно прав для удаления этого пользователя");
         }
-        if (UserRolesDefinition.getCountOfUsersInRole(userService.allUsers(), RolesEnum.ROLE_SUPERADMIN) == 1) {
-            model.addAttribute("superAdminError", "Вы единственный супер админ");
-            throw new AuthorisationException("superAdminError", "Вы единственный супер админ");
-        }
         userService.deleteUser(user.getId());
         if (request.getUserPrincipal().getName().equals(user.getUsername())) {
             try {

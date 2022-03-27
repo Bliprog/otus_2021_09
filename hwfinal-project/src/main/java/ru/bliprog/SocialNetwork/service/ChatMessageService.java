@@ -23,7 +23,9 @@ public class ChatMessageService {
     }
 
     public void saveNewMessage(ChatMessage chatMessageEntity) {
-        chatMessageRepository.save(chatMessageEntity);
+        if (chatMessageEntity.getContent() != null) {
+            chatMessageRepository.save(chatMessageEntity);
+        }
     }
 
     public ChatMessage newChatMessageEntityFromChatMessagePayload(ChatMessagePayload chatMessage) {

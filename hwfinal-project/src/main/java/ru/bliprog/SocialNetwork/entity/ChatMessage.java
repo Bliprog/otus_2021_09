@@ -2,6 +2,8 @@ package ru.bliprog.SocialNetwork.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import ru.bliprog.SocialNetwork.enums.MessageTypeEnum;
 
 import javax.persistence.*;
