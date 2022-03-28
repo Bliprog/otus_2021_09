@@ -8,7 +8,6 @@
 <body>
 <#import "/spring.ftl" as spring/>
 <div>
-    <fieldset>
         <fieldset>
             <form method="POST" name="userForm">
                 <h2>Регистрация</h2>
@@ -34,8 +33,6 @@
         <div>
             <@spring.showErrors "<br>"/>
         </div>
-        <a href="/">Главная</a>
-    </fieldset>
 </div>
     <a href="/">Главная</a>
 </body>
